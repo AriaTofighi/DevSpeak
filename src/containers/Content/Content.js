@@ -1,18 +1,12 @@
 import React from "react";
 
 import classes from "./Content.module.css";
-import Message from "../../components/Message/Message";
-import MessageInput from "../../components/MessageInput/MessageInput";
+import Messages from "../../components/Messages/Messages";
 
 const Content = (props) => {
   return (
     <div className={classes.ContentContainer}>
-      <div className={classes.Content}>
-        <Message />
-        <Message />
-        <Message />
-        <MessageInput />
-      </div>
+      <Messages />
     </div>
   );
 };

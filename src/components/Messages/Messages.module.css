@@ -1,0 +1,10 @@
+.Messages {
+  background-color: white;
+  padding: 20px;
+  margin: 15px;
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(100% - margin-top);
+  display: flex;
+  flex-direction: column;
+}

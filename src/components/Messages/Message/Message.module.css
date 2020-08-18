@@ -1,0 +1,8 @@
+.Message {
+  border-radius: 5px;
+  width: fit-content;
+  padding: 8px 8px;
+  padding-right: 20px;
+  color: darkmagenta;
+  background-color: lavenderblush;
+}

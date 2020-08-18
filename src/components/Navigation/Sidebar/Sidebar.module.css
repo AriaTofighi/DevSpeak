@@ -2,9 +2,9 @@
   position: fixed;
   width: 280px;
   max-width: 70%;
-  height: 100%;
   left: 0;
-  top: 0;
+  height: calc(100% - 56px);
+  top: 56px;
   z-index: 300;
   background-color: #804c6d;
   color: white;
