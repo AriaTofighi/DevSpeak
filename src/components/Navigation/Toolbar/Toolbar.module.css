@@ -1,0 +1,30 @@
+.Toolbar {
+  width: 100%;
+  padding: 5px;
+  height: 56px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-left: 20px;
+  box-sizing: border-box;
+  background-color: #804c6d;
+  color: white;
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  font-family: "Open Sans", sans-serif;
+}
+
+.Topic {
+  margin-left: 15px;
+}
+
+.MenuButton {
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .MenuButton {
+    display: none;
+  }
+}

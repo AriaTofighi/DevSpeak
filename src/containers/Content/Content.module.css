@@ -1,0 +1,16 @@
+.ContentContainer {
+  position: absolute;
+  top: 56px;
+  width: 100%;
+  height: calc(100% - 56px);
+  display: flex;
+  justify-content: center;
+}
+
+.Content {
+  background-color: white;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 60%;
+  height: 100%;
+}
