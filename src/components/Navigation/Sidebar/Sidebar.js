@@ -25,6 +25,7 @@ const Sidebar = (props) => {
         }`}
       >
         {/* Menu */}
+
         <List>
           {["Feed", "Settings"].map((text, index) => (
             <ListItem

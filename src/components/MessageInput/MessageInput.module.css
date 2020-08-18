@@ -1,0 +1,27 @@
+.MessageInput {
+  box-sizing: border-box;
+  height: 40px;
+  width: calc(100% - 70px);
+  position: absolute;
+  bottom: 40px;
+  display: flex;
+  justify-content: space-around;
+}
+
+input {
+  flex-grow: 5;
+  margin-right: 3px;
+  border-radius: 5px;
+}
+
+button {
+  flex-grow: 1;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #8b668b;
+  color: white;
+}
+
+button:hover {
+  background-color: #986e89;
+}

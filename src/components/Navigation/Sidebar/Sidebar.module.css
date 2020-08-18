@@ -20,5 +20,13 @@
   transform: translateX(-100%);
 }
 
-@media (min-width: 900px) {
+@media (min-width: 700px) {
+  .Sidebar {
+    height: calc(100% - 56px);
+    top: 56px;
+    transform: translateX(0);
+  }
+  .Button {
+    display: none;
+  }
 }

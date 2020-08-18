@@ -23,8 +23,12 @@
   cursor: pointer;
 }
 
-@media (max-width: 600px) {
+@media (min-width: 700px) {
   .MenuButton {
-    display: none;
+    display: none !important;
+  }
+
+  .Topic {
+    margin-left: 2px;
   }
 }

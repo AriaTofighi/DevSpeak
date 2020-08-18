@@ -5,12 +5,29 @@
   height: calc(100% - 56px);
   display: flex;
   justify-content: center;
+  background-color: rgba(256, 256, 256, 0.7);
 }
 
 .Content {
   background-color: white;
   padding: 20px;
+  margin: 15px;
   box-sizing: border-box;
-  width: 60%;
-  height: 100%;
+  width: 100%;
+  height: calc(100% - margin-top);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 700px) {
+  .ContentContainer {
+    left: 280px;
+    width: calc(100% - 280px);
+  }
+}
+
+@media (min-width: 900px) {
+  .Content {
+    width: 100%;
+  }
 }
