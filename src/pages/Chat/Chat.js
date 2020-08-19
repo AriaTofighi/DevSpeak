@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 const Chat = (props) => {
   let history = useHistory();
   let chat = null;
+  console.log(props.user);
   if (props.user) {
     chat = (
       <React.Fragment>
@@ -15,8 +16,9 @@ const Chat = (props) => {
           hideBackdrop={props.hideBackdrop}
           roomDataList={props.roomDataList}
           user={props.user}
+          userClicked={(userId) => props.userClicked(userId)}
         />
-        <Content />
+        <Content chattingWith={props.chattingWith} />
       </React.Fragment>
     );
   } else {

@@ -24,10 +24,16 @@ const UserList = (props) => {
 
   let initials;
 
-  const users = props.roomDataList.map((room) => {
+  const users = props.roomDataList?.map((room) => {
+    let userId = room.id;
+    console.log("ID List:", userId);
     initials = getInitials(room.name);
     return (
-      <ListItem button key={room.name}>
+      <ListItem
+        button
+        key={room.name}
+        onClick={() => props.userClicked(userId)}
+      >
         <ListItemIcon>
           <Avatar style={AvatarStyles}>{initials}</Avatar>
         </ListItemIcon>

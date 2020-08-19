@@ -41,7 +41,11 @@ const Sidebar = (props) => {
           ))}
         </List>
         <Divider style={DividerStyles} />
-        <UserList user={props.user} roomDataList={props.roomDataList} />
+        <UserList
+          userClicked={(userId) => props.userClicked(userId)}
+          user={props.user}
+          roomDataList={props.roomDataList}
+        />
       </div>
     </React.Fragment>
   );

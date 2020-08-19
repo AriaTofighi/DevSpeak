@@ -6,7 +6,7 @@ import Messages from "../../components/Messages/Messages";
 const Content = (props) => {
   return (
     <div className={classes.ContentContainer}>
-      <Messages />
+      <Messages chattingWith={props.chattingWith} />
     </div>
   );
 };

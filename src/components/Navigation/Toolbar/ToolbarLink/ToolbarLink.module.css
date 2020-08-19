@@ -1,0 +1,8 @@
+.ToolbarLink {
+  position: absolute;
+  right: 0;
+  padding: inherit;
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}

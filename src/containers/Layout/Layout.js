@@ -8,13 +8,15 @@ import { db, auth, provider } from "../../services/firebase";
 import {
   BrowserRouter as Router,
   Switch,
+  Redirect,
   Route,
-  useHistory,
   withRouter,
 } from "react-router-dom";
 import Home from "../../pages/Home/Home";
 import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
 import Login from "../../pages/Login/Login";
+import StateContext from "../../state/StateProvider";
+import firebase from "firebase";
 
 const theme = createMuiTheme({
   typography: {
@@ -23,14 +25,36 @@ const theme = createMuiTheme({
 });
 
 class Layout extends React.Component {
+  static contextType = StateContext;
+
   state = {
     showSidebar: false,
     rooms: [],
     user: null,
     loginLoading: false,
+    chattingWith: {
+      id: null,
+      name: "",
+    },
   };
 
   componentDidMount() {
+    this.setState({ loginLoading: true });
+    this.listenAuth = auth.onAuthStateChanged((user) => {
+      this.setState(
+        {
+          user,
+          loginLoading: false,
+        },
+        () => {
+          if (this.state.user && this.props.location.pathname === "/login") {
+            this.redirectToChat();
+          }
+        }
+      );
+    });
+
+    // Prints out list of all users onto sidebar
     db.collection("users").onSnapshot((snap) => {
       this.setState(
         {
@@ -44,20 +68,10 @@ class Layout extends React.Component {
         }
       );
     });
+  }
 
-    // db.collection("rooms").onSnapshot((snap) => {
-    //   this.setState(
-    //     {
-    //       rooms: snap.docs.map((doc) => ({
-    //         id: doc.id,
-    //         name: doc.data().name,
-    //       })),
-    //     },
-    //     () => {
-    //       console.log(this.state.rooms);
-    //     }
-    //   );
-    // });
+  componentWillUnmount() {
+    this.listenAuth();
   }
 
   sidebarToggleHandler = () => {
@@ -105,17 +119,54 @@ class Layout extends React.Component {
       });
   };
 
+  signOutHandler = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(function () {
+        // Sign-out successful.
+      })
+      .catch(function (error) {
+        // An error happened.
+      });
+  };
+
+  userClickedHandler = (userId) => {
+    // console.log(userId + "user clicked");
+    db.collection("users")
+      .doc(userId)
+      .get()
+      .then((user) => {
+        // console.log(user.data());
+        const userData = user.data();
+        this.setState({
+          chattingWith: {
+            id: userId,
+            name: userData.name,
+          },
+        });
+      });
+  };
+
   render() {
+    // console.log(this.props.user);
+
     let chat = () => (
       <Chat
         showSidebar={this.state.showSidebar}
         hideBackdrop={this.sidebarToggleHandler}
         roomDataList={this.state.users}
         user={this.state.user}
+        userClicked={(userId) => this.userClickedHandler(userId)}
+        chattingWith={this.state.chattingWith}
       />
     );
     let toolBar = () => (
-      <Toolbar sidebarToggleClicked={this.sidebarToggleHandler} />
+      <Toolbar
+        user={this.state.user}
+        sidebarToggleClicked={this.sidebarToggleHandler}
+        signOut={this.signOutHandler}
+      />
     );
     let login = () => (
       <Login googleLogin={this.googleLogin} loading={this.state.loginLoading} />
@@ -125,9 +176,12 @@ class Layout extends React.Component {
       <ThemeProvider theme={theme}>
         <div className={classes.Layout}>
           <Route path="/" component={toolBar} />
-          <Route path="/" exact component={Home} />
-          <Route path="/login" exact component={login} />
-          <Route path="/chat" component={chat} />
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/login" exact component={login} />
+            <Route path="/chat" exact component={chat} />
+            <Redirect from="*" to="/" />
+          </Switch>
         </div>
       </ThemeProvider>
     );
