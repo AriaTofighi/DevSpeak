@@ -1,0 +1,44 @@
+.Login {
+  position: absolute;
+  box-sizing: border-box;
+  top: 56px;
+  padding: 3px;
+  height: calc(100% - 56px);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 30px;
+  padding-left: 5px;
+}
+
+.NoAccount {
+  font-size: 16px;
+  font-weight: 500;
+  position: absolute;
+  bottom: 0;
+}
+
+.NoAccountLink {
+  font-weight: 700;
+  display: inline-block;
+}
+
+.Button {
+  width: 100%;
+  height: 40px;
+  background-color: #531b3e;
+  border: none;
+  color: white;
+  border-radius: 3px;
+}
+
+.Button:hover {
+  background-color: rgba(83, 40, 62, 1);
+  cursor: pointer;
+}

@@ -4,8 +4,8 @@ import classes from "./MessageInput.module.css";
 const MessageInput = () => {
   return (
     <div className={classes.MessageInput}>
-      <input placeholder="Enter a message..." />
-      <button>Send</button>
+      <input className={classes.Input} placeholder="Enter a message..." />
+      <button className={classes.Button}>Send</button>
     </div>
   );
 };

@@ -10,29 +10,28 @@ import {
 
 // import classes from "./UserList.module.css";
 
-const UserList = () => {
+const getInitials = (fullName) => {
+  return fullName
+    .split(" ")
+    .map((name) => name[0])
+    .join("");
+};
+
+const UserList = (props) => {
   let AvatarStyles = {
     backgroundColor: "#986E89",
   };
-  let userNames = [
-    "Aria Tofighi",
-    "Arash Saadati",
-    "Stefano Reale",
-    "Trevor Lee",
-  ];
+
   let initials;
 
-  let users = userNames.map((fullName, index) => {
-    initials = fullName
-      .split(" ")
-      .map((name) => name[0])
-      .join("");
+  const users = props.roomDataList.map((room) => {
+    initials = getInitials(room.name);
     return (
-      <ListItem button key={fullName}>
+      <ListItem button key={room.name}>
         <ListItemIcon>
           <Avatar style={AvatarStyles}>{initials}</Avatar>
         </ListItemIcon>
-        <ListItemText primary={fullName} />
+        <ListItemText primary={room.name} />
       </ListItem>
     );
   });
