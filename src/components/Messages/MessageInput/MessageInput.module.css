@@ -1,9 +1,8 @@
 .MessageInput {
   box-sizing: border-box;
   height: 40px;
-  width: calc(100% - 70px);
-  position: absolute;
-  bottom: 40px;
+  width: calc(100%);
+  /* bottom: 40px; */
   display: flex;
 }
 
@@ -12,19 +11,20 @@
   margin-right: 3px;
   border-radius: 2px;
   padding-left: 10px;
-  border: 1px solid black;
-  box-shadow: 2px 1px 2px black;
+  border: none;
+  box-shadow: 2px 1px 3px black;
 }
 
 .Button {
   flex-grow: 1;
-  border-radius: 5px;
+  border-radius: 3px;
   cursor: pointer;
-  background-color: #8b668b;
+  background-color: #804c6d;
   color: white;
   font-size: 16px;
+  font-weight: lighter;
   border: none;
-  box-shadow: 2px 2px 2px black;
+  box-shadow: 2px 1px 3px black;
 }
 
 .Button:hover {

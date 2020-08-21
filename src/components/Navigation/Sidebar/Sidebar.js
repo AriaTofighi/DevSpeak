@@ -14,6 +14,8 @@ import classes from "./Sidebar.module.css";
 const Sidebar = (props) => {
   let DividerStyles = {
     backgroundColor: "#CFBEC9",
+    width: "90%",
+    margin: "auto",
   };
 
   return (
@@ -42,6 +44,7 @@ const Sidebar = (props) => {
         </List>
         <Divider style={DividerStyles} />
         <UserList
+          chatsWith={props.chatsWith}
           userClicked={(userId) => props.userClicked(userId)}
           user={props.user}
           roomDataList={props.roomDataList}

@@ -8,6 +8,12 @@
   background-color: rgba(256, 256, 256, 0.7);
 }
 
+.StartChatting {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media (min-width: 700px) {
   .ContentContainer {
     left: 280px;

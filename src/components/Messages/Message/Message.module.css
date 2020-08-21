@@ -1,10 +1,29 @@
 .Message {
-  border-radius: 5px;
-  width: fit-content;
-  padding: 8px 8px;
-  padding-right: 20px;
-  color: darkmagenta;
-  background-color: lavenderblush;
-  word-wrap: break-word;
-  max-width: 300px;
+  display: flex;
+  max-width: 80%;
+}
+
+.MessageBody {
+  padding-left: 10px;
+}
+
+.MessageHeader {
+  font-weight: bold;
+  height: fit-content;
+}
+
+.MessageTimestamp {
+  font-weight: 300;
+  display: inline-block;
+  margin: 0;
+}
+
+.MessageText {
+  margin: 0;
+}
+
+.UserImage {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
 }

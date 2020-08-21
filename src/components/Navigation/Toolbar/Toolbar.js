@@ -7,9 +7,9 @@ import { Link, useLocation } from "react-router-dom";
 
 const Toolbar = (props) => {
   let location = useLocation().pathname;
-  console.log(location);
-  console.log(props.user);
-  console.log(location === "/" || "/login");
+  // console.log(location);
+  // console.log(props.user);
+  // console.log(location === "/" || "/login");
 
   return (
     <header className={classes.Toolbar}>

@@ -1,11 +1,19 @@
 import React from "react";
 import classes from "./MessageInput.module.css";
 
-const MessageInput = () => {
+const MessageInput = (props) => {
   return (
     <div className={classes.MessageInput}>
-      <input className={classes.Input} placeholder="Enter a message..." />
-      <button className={classes.Button}>Send</button>
+      <input
+        value={props.currentMessage}
+        onChange={props.currentMessageChanged}
+        className={classes.Input}
+        placeholder="Enter a message..."
+        key="msgInput"
+      />
+      <button className={classes.Button} onClick={props.sendMessage}>
+        Send
+      </button>
     </div>
   );
 };

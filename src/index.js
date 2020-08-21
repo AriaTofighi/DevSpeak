@@ -3,18 +3,14 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import StateContext from "./state/StateProvider";
+import { BrowserRouter as Router } from "react-router-dom";
 
 ReactDOM.render(
-  <StateContext.Provider
-    value={{
-      user: "test",
-    }}
-  >
+  <Router>
     <React.StrictMode>
       <App />
     </React.StrictMode>
-  </StateContext.Provider>,
+  </Router>,
   document.getElementById("root")
 );
 

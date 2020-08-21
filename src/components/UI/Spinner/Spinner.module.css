@@ -1,5 +1,5 @@
 .loader {
-  z-index: 50;
+  z-index: 200;
   position: absolute;
   font-size: 10px;
   margin: 50px auto;

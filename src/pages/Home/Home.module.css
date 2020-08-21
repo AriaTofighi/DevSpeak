@@ -2,7 +2,8 @@
   position: absolute;
   box-sizing: border-box;
   top: 56px;
-  padding: 3px;
+  padding: 16px;
   height: calc(100% - 56px);
   width: 100%;
+  font-size: 30px;
 }

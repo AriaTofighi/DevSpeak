@@ -1,5 +1,8 @@
-import React from "react";
-
+import React, { useState } from "react";
+import Modal from "@material-ui/core/Modal";
+import { makeStyles } from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
+import firebase from "firebase";
 import {
   List,
   ListItem,
@@ -7,8 +10,16 @@ import {
   Avatar,
   ListItemIcon,
 } from "@material-ui/core";
+import { auth, db } from "../../services/firebase";
+import Divider from "@material-ui/core/Divider";
 
-// import classes from "./UserList.module.css";
+import classes from "./UserList.module.css";
+
+let DividerStyles = {
+  backgroundColor: "#CFBEC9",
+  width: "90%",
+  margin: "auto",
+};
 
 const getInitials = (fullName) => {
   return fullName
@@ -18,31 +29,132 @@ const getInitials = (fullName) => {
 };
 
 const UserList = (props) => {
+  function getModalStyle() {
+    const top = 50;
+    const left = 50;
+
+    return {
+      top: `${top}%`,
+      left: `${left}%`,
+      transform: `translate(-${top}%, -${left}%)`,
+    };
+  }
+
+  const useStyles = makeStyles((theme) => ({
+    paper: {
+      position: "absolute",
+      width: 400,
+      backgroundColor: theme.palette.background.paper,
+      outline: "none",
+      boxShadow: theme.shadows[4],
+      padding: theme.spacing(2, 4, 3),
+    },
+  }));
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const materialClasses = useStyles();
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
   let AvatarStyles = {
     backgroundColor: "#986E89",
   };
 
+  let chatsWith = [];
   let initials;
 
-  const users = props.roomDataList?.map((room) => {
-    let userId = room.id;
-    console.log("ID List:", userId);
-    initials = getInitials(room.name);
+  const sidebarUsers = props.roomDataList?.map((user) => {
+    let userId = user.id;
+
+    if (auth.currentUser.uid === userId || !props.chatsWith.includes(userId)) {
+      return;
+    }
+
+    // console.log("ID List:", userId);
+    initials = getInitials(user.name);
     return (
       <ListItem
         button
-        key={room.name}
+        key={user.name}
         onClick={() => props.userClicked(userId)}
       >
         <ListItemIcon>
           <Avatar style={AvatarStyles}>{initials}</Avatar>
         </ListItemIcon>
-        <ListItemText primary={room.name} />
+        <ListItemText primary={user.name} />
       </ListItem>
     );
   });
 
-  return <List>{users}</List>;
+  const addToChattingWith = (userId) => {
+    // console.log(userId);
+    db.collection("users")
+      .doc(auth.currentUser.uid)
+      .set(
+        {
+          chatsWith: firebase.firestore.FieldValue.arrayUnion(userId),
+        },
+        { merge: true }
+      );
+  };
+
+  const allUsers = props.roomDataList?.map((user) => {
+    let userId = user.id;
+    // console.log(userId, auth.currentUser.uid);
+
+    if (auth.currentUser.uid === userId || props.chatsWith.includes(userId)) {
+      return;
+    }
+    // console.log("ID List:", userId);
+    initials = getInitials(user.name);
+    return (
+      <ListItem
+        button
+        key={user.name}
+        onClick={() => addToChattingWith(userId)}
+      >
+        <ListItemIcon>
+          <Avatar style={AvatarStyles}>{initials}</Avatar>
+        </ListItemIcon>
+        <ListItemText primary={user.name} />
+      </ListItem>
+    );
+  });
+
+  const body = (
+    <div style={modalStyle} className={materialClasses.paper}>
+      <h2 id="simple-modal-title">Select a User</h2>
+      <p id="simple-modal-description">{allUsers}</p>
+    </div>
+  );
+
+  return (
+    <>
+      <List>
+        <ListItem button>
+          <ListItemText onClick={handleOpen} primary="Start a New Chat" />
+          <AddIcon onClick={handleOpen}></AddIcon>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {body}
+          </Modal>
+        </ListItem>{" "}
+      </List>
+      <Divider style={DividerStyles} />
+
+      <List>{sidebarUsers}</List>
+    </>
+  );
 };
 
 export default UserList;

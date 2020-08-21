@@ -14,10 +14,26 @@ const Messages = (props) => {
     <div className={classes.Messages}>
       <h4 className={classes.Topic}>{props.chattingWith.name}</h4>
       <Divider style={DividerStyles} />
-      <Message />
-      <Message />
-      <Message />
-      <MessageInput />
+      <div className={classes.MessagesBody}>
+        {props.roomExists ? (
+          <>
+            {props.messages.map((message, index) => {
+              return <Message key={index} message={message} />;
+            })}{" "}
+          </>
+        ) : (
+          <div className={classes.RoomDoesNotExist}>
+            Looks like you haven't spoken yet, send a message to get started.
+          </div>
+        )}
+      </div>
+
+      <MessageInput
+        key="msgInput"
+        sendMessage={props.sendMessage}
+        currentMessage={props.currentMessage}
+        currentMessageChanged={(event) => props.currentMessageChanged(event)}
+      />
     </div>
   );
 };

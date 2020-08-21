@@ -37,18 +37,16 @@ const Login = (props) => {
       <Paper className={materialClasses.paper} elevation={3}>
         Login
         <Divider style={DividerStyles} />
-        <form>
-          <input className={classes.Input} placeholder="Email"></input>
-          <input
-            className={classes.Input}
-            type="password"
-            placeholder="Password"
-          ></input>
-          <button className={classes.Button}>Login</button>
-          <button className={classes.Button} onClick={props.googleLogin}>
-            Google Login / Signup
-          </button>
-        </form>
+        <input className={classes.Input} placeholder="Email"></input>
+        <input
+          className={classes.Input}
+          type="password"
+          placeholder="Password"
+        ></input>
+        <button className={classes.Button}>Login</button>
+        <button className={classes.Button} onClick={props.googleLogin}>
+          Google Login / Signup
+        </button>
         <div className={classes.NoAccount}>
           Don't have an account? Sign up{" "}
           <p className={classes.NoAccountLink}>here.</p>
