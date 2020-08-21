@@ -10,6 +10,7 @@ const MessageInput = (props) => {
         className={classes.Input}
         placeholder="Enter a message..."
         key="msgInput"
+        onKeyDown={props.handleMessageKeyDown}
       />
       <button className={classes.Button} onClick={props.sendMessage}>
         Send

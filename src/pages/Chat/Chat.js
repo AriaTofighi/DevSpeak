@@ -26,6 +26,7 @@ const Chat = (props) => {
           sendMessage={props.sendMessage}
           currentMessage={props.currentMessage}
           currentMessageChanged={(event) => props.currentMessageChanged(event)}
+          handleMessageKeyDown={props.handleMessageKeyDown}
         />
       </>
     );

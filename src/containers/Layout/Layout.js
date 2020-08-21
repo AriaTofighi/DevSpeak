@@ -37,7 +37,6 @@ class Layout extends React.Component {
       name: "",
     },
     chatsWith: [],
-    rooms: [],
     currentRoomRef: null,
     messages: [],
     currentMessage: "",
@@ -81,9 +80,7 @@ class Layout extends React.Component {
             name: doc.data().name,
           })),
         },
-        () => {
-          // console.log(this.state.rooms);
-        }
+        () => {}
       );
     });
   }
@@ -94,13 +91,47 @@ class Layout extends React.Component {
     });
   };
 
+  handleMessageKeyDown = (event) => {
+    if (event.key == "Enter") {
+      this.sendMessage();
+    }
+  };
+
   sendMessage = () => {
-    this.state.currentRoomRef.collection("messages").add({
-      message: this.state.currentMessage,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      user: this.state.user.displayName,
-      userImage: "https://i.imgur.com/owhNAKK.png",
-    });
+    if (this.state.messages.length === 0) {
+      db.collection("rooms")
+        .doc(this.state.user.uid + this.state.chattingWith.id)
+        .set({
+          exists: true,
+        })
+        .then(() => {
+          db.collection("rooms")
+            .doc(this.state.user.uid + this.state.chattingWith.id)
+            .collection("messages")
+            .add({
+              message: this.state.currentMessage,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+              user: this.state.user.displayName,
+              userImage: "https://i.imgur.com/owhNAKK.png",
+            })
+            .then(() => {
+              this.getRoomClickedData(this.state.chattingWith.id);
+              this.setState({ currentMessage: "" });
+            });
+        });
+    } else {
+      this.state.currentRoomRef
+        .collection("messages")
+        .add({
+          message: this.state.currentMessage,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          user: this.state.user.displayName,
+          userImage: "https://i.imgur.com/owhNAKK.png",
+        })
+        .then(() => {
+          this.setState({ currentMessage: "" });
+        });
+    }
   };
 
   componentWillUnmount() {
@@ -164,8 +195,6 @@ class Layout extends React.Component {
       });
   };
 
-  saveMessagesToState = (doc) => {};
-
   getUserClickedData = (userId) => {
     db.collection("users")
       .doc(userId)
@@ -182,9 +211,10 @@ class Layout extends React.Component {
   };
 
   getRoomClickedData = (userId) => {
-    if (userId === this.state.chattingWith.id) {
-      return;
-    }
+    // If user clicked and who you're already chatting with is the same, don't re-load messages
+    // if (userId === this.state.chattingWith.id) {
+    //   return;
+    // }
     const comboIds = [
       this.state.user.uid + userId,
       userId + this.state.user.uid,
@@ -232,6 +262,7 @@ class Layout extends React.Component {
 
   userClickedHandler = (userId) => {
     // Get user clicked data and set who you're chatting with in state
+    this.sidebarToggleHandler();
     this.getUserClickedData(userId);
     this.getRoomClickedData(userId);
   };
@@ -270,6 +301,7 @@ class Layout extends React.Component {
               <Login
                 googleLogin={this.googleLogin}
                 loading={this.state.loginLoading}
+                user={this.state.user}
               />
             </Route>
 
@@ -289,6 +321,7 @@ class Layout extends React.Component {
                 currentMessageChanged={(event) =>
                   this.currentMessageChangedHandler(event)
                 }
+                handleMessageKeyDown={this.handleMessageKeyDown}
               />
             </Route>
             <Redirect from="*" to="/" />

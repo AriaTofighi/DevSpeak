@@ -11,6 +11,22 @@ const Toolbar = (props) => {
   // console.log(props.user);
   // console.log(location === "/" || "/login");
 
+  const renderLogInOrOut = () => {
+    if (props.user) {
+      return <ToolBarLink clicked={props.signOut}>Sign Out</ToolBarLink>;
+    } else if (location !== "/login") {
+      return (
+        <ToolBarLink>
+          <Link className={classes.Link} to="/login">
+            Login
+          </Link>
+        </ToolBarLink>
+      );
+    } else {
+      return null;
+    }
+  };
+
   return (
     <header className={classes.Toolbar}>
       {location === "/" || location === "/login" ? null : (
@@ -25,15 +41,7 @@ const Toolbar = (props) => {
           DevSpeak
         </Link>
       </h2>
-      {props.user ? (
-        <ToolBarLink clicked={props.signOut}>Sign Out</ToolBarLink>
-      ) : (
-        <ToolBarLink>
-          <Link className={classes.Link} to="/login">
-            Login
-          </Link>
-        </ToolBarLink>
-      )}
+      {renderLogInOrOut()}
     </header>
   );
 };

@@ -1,6 +1,7 @@
 .Message {
   display: flex;
   max-width: 80%;
+  margin-bottom: 10px;
 }
 
 .MessageBody {

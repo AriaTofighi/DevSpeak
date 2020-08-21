@@ -102,6 +102,16 @@ const UserList = (props) => {
         },
         { merge: true }
       );
+    db.collection("users")
+      .doc(userId)
+      .set(
+        {
+          chatsWith: firebase.firestore.FieldValue.arrayUnion(
+            auth.currentUser.uid
+          ),
+        },
+        { merge: true }
+      );
   };
 
   const allUsers = props.roomDataList?.map((user) => {
@@ -130,7 +140,7 @@ const UserList = (props) => {
   const body = (
     <div style={modalStyle} className={materialClasses.paper}>
       <h2 id="simple-modal-title">Select a User</h2>
-      <p id="simple-modal-description">{allUsers}</p>
+      <div id="simple-modal-description">{allUsers}</div>
     </div>
   );
 

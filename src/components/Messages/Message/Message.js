@@ -3,9 +3,10 @@ import React from "react";
 import classes from "./Message.module.css";
 
 const Message = (props) => {
+  // console.log(props.message);
   return (
     <div className={classes.Message}>
-      <img className={classes.UserImage} src={props.message.image} />
+      <img className={classes.UserImage} src={props.message.userImage} />
       <div className={classes.MessageBody}>
         <div className={classes.MessageHeader}>
           {props.message.user}{" "}
