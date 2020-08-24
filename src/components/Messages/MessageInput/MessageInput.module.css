@@ -4,15 +4,24 @@
   width: calc(100%);
   /* bottom: 40px; */
   display: flex;
+  align-items: center;
 }
 
 .Input {
-  flex-grow: 5;
+  flex-grow: 7;
   margin-right: 3px;
-  border-radius: 2px;
+  border-radius: 35px;
   padding-left: 10px;
   border: none;
   box-shadow: 2px 1px 3px black;
+  height: 100%;
+}
+
+.SendIcon {
+  height: 64px;
+  flex-grow: 1;
+  cursor: pointer;
+  max-width: 100px;
 }
 
 .Button {

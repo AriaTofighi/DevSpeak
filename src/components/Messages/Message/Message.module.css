@@ -1,26 +1,31 @@
 .Message {
   display: flex;
-  max-width: 80%;
-  margin-bottom: 10px;
+  /* max-width: 100%; */
+  margin-bottom: 15px;
+  padding: 3px;
 }
 
 .MessageBody {
   padding-left: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
 }
 
 .MessageHeader {
   font-weight: bold;
   height: fit-content;
+  text-align: left;
 }
 
 .MessageTimestamp {
-  font-weight: 300;
+  font-weight: 100;
   display: inline-block;
   margin: 0;
 }
 
 .MessageText {
   margin: 0;
+  text-align: left;
 }
 
 .UserImage {

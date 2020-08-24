@@ -18,6 +18,7 @@ const Chat = (props) => {
           user={props.user}
           userClicked={(userId) => props.userClicked(userId)}
           chatsWith={props.chatsWith}
+          currentRoomRef={props.currentRoomRef}
         />
         <Content
           roomExists={props.roomExists}

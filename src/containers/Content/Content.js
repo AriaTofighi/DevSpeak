@@ -19,7 +19,7 @@ const Content = (props) => {
         />
       ) : (
         <div className={classes.StartChatting}>
-          <h3>Click on a user to start chatting!</h3>
+          <h3>Start a new chat or click on a friend to start chatting!</h3>
         </div>
       )}
     </div>

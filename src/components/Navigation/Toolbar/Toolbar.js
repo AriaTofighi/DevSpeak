@@ -29,7 +29,7 @@ const Toolbar = (props) => {
 
   return (
     <header className={classes.Toolbar}>
-      {location === "/" || location === "/login" ? null : (
+      {location === "/login" ? null : (
         <MenuIcon
           className={classes.MenuButton}
           onClick={props.sidebarToggleClicked}

@@ -7,7 +7,7 @@
 
 .CheckingAuthLoader {
   position: absolute;
-  height: calc(100% - 56px);
+  height: calc(100%);
   width: 100%;
   background-color: #eae5e8;
   z-index: 110;

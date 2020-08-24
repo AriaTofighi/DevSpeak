@@ -5,14 +5,7 @@ import classes from "./Layout.module.css";
 import Chat from "../../pages/Chat/Chat";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { db, auth, provider } from "../../services/firebase";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Redirect,
-  Route,
-  withRouter,
-} from "react-router-dom";
-import Home from "../../pages/Home/Home";
+import { Switch, Redirect, Route, withRouter } from "react-router-dom";
 import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
 import Login from "../../pages/Login/Login";
 import firebase from "firebase";
@@ -80,7 +73,28 @@ class Layout extends React.Component {
             name: doc.data().name,
           })),
         },
-        () => {}
+        () => {
+          let usersWithRoomInfo = this.state.users.map((user) => {
+            db.collection("rooms")
+              .where("users", "array-contains", auth.currentUser.uid)
+              .onSnapshot((snap) => {
+                console.log("inside of user list where fucntion");
+                snap.forEach((doc) => {
+                  if (doc.data().users.includes(user.id)) {
+                    // Should only find one document since only one room between 2 people is made
+                    user.latestMessage = doc.data().latestMessage;
+                    user.latestTime = doc.data().latestTime;
+                    if (user.latestMessage.length > 20) {
+                      user.latestMessage = user.latestMessage.substring(0, 20);
+                    }
+                    user.latestMessage = user.latestMessage + "...";
+                  }
+                });
+              });
+            return user;
+          });
+          this.setState({ users: [...usersWithRoomInfo] });
+        }
       );
     });
   }
@@ -92,17 +106,22 @@ class Layout extends React.Component {
   };
 
   handleMessageKeyDown = (event) => {
-    if (event.key == "Enter") {
+    if (event.key === "Enter") {
       this.sendMessage();
     }
   };
 
   sendMessage = () => {
+    const date = new Date();
+    let currentDateAndTime = date.toString();
+
     if (this.state.messages.length === 0) {
       db.collection("rooms")
         .doc(this.state.user.uid + this.state.chattingWith.id)
         .set({
-          exists: true,
+          users: [this.state.user.uid, this.state.chattingWith.id],
+          latestMessage: this.state.currentMessage,
+          lastestTime: currentDateAndTime,
         })
         .then(() => {
           db.collection("rooms")
@@ -110,9 +129,9 @@ class Layout extends React.Component {
             .collection("messages")
             .add({
               message: this.state.currentMessage,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+              timestamp: currentDateAndTime,
               user: this.state.user.displayName,
-              userImage: "https://i.imgur.com/owhNAKK.png",
+              userImage: this.state.user.photoURL,
             })
             .then(() => {
               this.getRoomClickedData(this.state.chattingWith.id);
@@ -124,11 +143,16 @@ class Layout extends React.Component {
         .collection("messages")
         .add({
           message: this.state.currentMessage,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          timestamp: currentDateAndTime,
           user: this.state.user.displayName,
-          userImage: "https://i.imgur.com/owhNAKK.png",
+          userImage: this.state.user.photoURL,
         })
         .then(() => {
+          this.state.currentRoomRef.set({
+            users: [this.state.user.uid, this.state.chattingWith.id],
+            latestMessage: this.state.currentMessage,
+            latestTime: currentDateAndTime,
+          });
           this.setState({ currentMessage: "" });
         });
     }
@@ -146,7 +170,7 @@ class Layout extends React.Component {
 
   redirectToChat = () => {
     this.setState({ loginLoading: false }, () => {
-      this.props.history.push("/chat");
+      this.props.history.push("/");
     });
   };
 
@@ -184,15 +208,20 @@ class Layout extends React.Component {
   };
 
   signOutHandler = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(function () {
-        // Sign-out successful.
-      })
-      .catch(function (error) {
-        // An error happened.
-      });
+    this.setState(
+      { chattingWith: { id: null, name: null }, messages: [] },
+      () => {
+        firebase
+          .auth()
+          .signOut()
+          .then(function () {
+            // Sign-out successful.
+          })
+          .catch(function (error) {
+            // An error happened.
+          });
+      }
+    );
   };
 
   getUserClickedData = (userId) => {
@@ -219,7 +248,7 @@ class Layout extends React.Component {
       this.state.user.uid + userId,
       userId + this.state.user.uid,
     ];
-    // console.log(comboIds);
+    console.log("COMBO IDS", comboIds);
 
     db.collection("rooms")
       .where(firebase.firestore.FieldPath.documentId(), "in", comboIds)
@@ -227,33 +256,41 @@ class Layout extends React.Component {
       .then((querySnapshot) => {
         if (!querySnapshot.empty) {
           // Room exists, load message data into state
-          // console.log("room exists");
+          console.log("room exists");
 
           querySnapshot.forEach((doc) => {
             // Only one document should match the correct combo id so this will loop once
             this.setState({ currentRoomRef: doc.ref }, () =>
               console.log("current room ref", this.state.currentRoomRef)
             );
+
             doc.ref
               .collection("messages")
               .orderBy("timestamp", "asc")
               .onSnapshot((snapshot) => {
                 this.setState({ messages: [] });
+                let messagesStore = [];
 
                 snapshot.forEach((doc) => {
-                  this.setState(
-                    (prevState) => {
-                      return {
-                        messages: [...prevState.messages, doc.data()],
-                      };
-                    },
-                    () => console.log(this.state.messages)
-                  );
+                  messagesStore.push(doc.data());
                 });
+
+                this.setState(
+                  (prevState) => {
+                    return {
+                      messages: [...messagesStore],
+                    };
+                  },
+                  () => console.log(this.state.messages)
+                );
               });
           });
         } else {
-          // Room does not exist, make a room and set messages array to empty in state
+          // Room does not exist, set messages array to empty in state (room not created here,
+          // rooms are created when a message is sent to a person whos combo id with local
+          // user id adds up to make an id found in the rooms collection. The combo id can be one
+          // two concatenations, aString + bString or bString + aString).
+
           console.log("room does not exist");
           this.setState({ messages: [] });
         }
@@ -262,7 +299,7 @@ class Layout extends React.Component {
 
   userClickedHandler = (userId) => {
     // Get user clicked data and set who you're chatting with in state
-    this.sidebarToggleHandler();
+    // this.sidebarToggleHandler();
     this.getUserClickedData(userId);
     this.getRoomClickedData(userId);
   };
@@ -295,8 +332,6 @@ class Layout extends React.Component {
           {checkingAuthLoader}
 
           <Switch>
-            <Route path="/" exact component={Home} />
-
             <Route path="/login" exact>
               <Login
                 googleLogin={this.googleLogin}
@@ -305,7 +340,7 @@ class Layout extends React.Component {
               />
             </Route>
 
-            <Route path="/chat" exact>
+            <Route path="/" exact>
               <Chat
                 showSidebar={this.state.showSidebar}
                 hideBackdrop={this.sidebarToggleHandler}
@@ -322,6 +357,7 @@ class Layout extends React.Component {
                   this.currentMessageChangedHandler(event)
                 }
                 handleMessageKeyDown={this.handleMessageKeyDown}
+                currentRoomRef={this.state.curentRoomRef}
               />
             </Route>
             <Redirect from="*" to="/" />

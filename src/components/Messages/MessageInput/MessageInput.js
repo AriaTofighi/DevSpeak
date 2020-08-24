@@ -1,5 +1,6 @@
 import React from "react";
 import classes from "./MessageInput.module.css";
+import SendIcon from "@material-ui/icons/Send";
 
 const MessageInput = (props) => {
   return (
@@ -12,9 +13,10 @@ const MessageInput = (props) => {
         key="msgInput"
         onKeyDown={props.handleMessageKeyDown}
       />
-      <button className={classes.Button} onClick={props.sendMessage}>
-        Send
-      </button>
+      <SendIcon className={classes.SendIcon} onClick={props.sendMessage} />
+      {/* // <button className={classes.Button} onClick={props.sendMessage}>
+      //   Send
+      // </button> */}
     </div>
   );
 };

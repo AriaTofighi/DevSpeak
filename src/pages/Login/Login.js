@@ -12,12 +12,16 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     height: "50%",
     width: "80%",
-    maxWidth: "340px",
+    maxWidth: "500px",
     padding: "16px",
     fontWeight: "bold",
-    fontSize: "35px",
     boxSizing: "border-box",
     position: "absolute",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: "30px",
   },
 }));
 
@@ -40,7 +44,7 @@ const Login = (props) => {
         </React.Fragment>
       ) : null}
       <Paper className={materialClasses.paper} elevation={3}>
-        Login
+        Login to DevSpeak
         <Divider style={DividerStyles} />
         {/* <input className={classes.Input} placeholder="Email"></input>
         <input
@@ -50,7 +54,7 @@ const Login = (props) => {
         ></input>
         <button className={classes.Button}>Login</button> */}
         <button className={classes.Button} onClick={props.googleLogin}>
-          Google Login / Signup
+          Google Login
         </button>
         {/* <div className={classes.NoAccount}>
           Don't have an account? Sign up{" "}

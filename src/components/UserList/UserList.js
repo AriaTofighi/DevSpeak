@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
@@ -42,12 +42,26 @@ const UserList = (props) => {
 
   const useStyles = makeStyles((theme) => ({
     paper: {
+      textAlign: "center",
       position: "absolute",
       width: 400,
+      maxWidth: "70%",
       backgroundColor: theme.palette.background.paper,
       outline: "none",
       boxShadow: theme.shadows[4],
       padding: theme.spacing(2, 4, 3),
+    },
+    root: {
+      padding: "15px",
+      "&:hover": {
+        backgroundColor: "#986e89",
+      },
+      cursor: "pointer",
+    },
+    topLine: {
+      margin: 0,
+      padding: 0,
+      display: "flex",
     },
   }));
 
@@ -66,9 +80,9 @@ const UserList = (props) => {
     backgroundColor: "#986E89",
   };
 
-  let chatsWith = [];
   let initials;
 
+  // room data list is user data list with also last message / last message time room data if applicable
   const sidebarUsers = props.roomDataList?.map((user) => {
     let userId = user.id;
 
@@ -76,19 +90,24 @@ const UserList = (props) => {
       return;
     }
 
-    // console.log("ID List:", userId);
     initials = getInitials(user.name);
     return (
-      <ListItem
-        button
+      // <React.Fragment key={user.name}>
+      <div
+        className={materialClasses.root}
         key={user.name}
         onClick={() => props.userClicked(userId)}
       >
-        <ListItemIcon>
-          <Avatar style={AvatarStyles}>{initials}</Avatar>
-        </ListItemIcon>
-        <ListItemText primary={user.name} />
-      </ListItem>
+        <ListItem className={materialClasses.topLine}>
+          <ListItemIcon>
+            <Avatar style={AvatarStyles}>{initials}</Avatar>
+          </ListItemIcon>
+          <ListItemText primary={user.name} />
+          {/* <ListItemText primary={user.latestMessage} /> */}
+        </ListItem>
+        <div className={classes.LatestMessage}>{user.latestMessage}</div>
+      </div>
+      // </React.Fragment>
     );
   });
 
