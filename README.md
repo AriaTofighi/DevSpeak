@@ -1,4 +1,17 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# DevSpeak
+
+An instant messaging web application with a sleek, reactive design created using React.
+
+## Languages
+- HTML
+- CSS
+- JavaScript
+
+## Database
+- Firebase
+
+## IDE
+- Visual Studio Code
 
 ## Available Scripts
 
