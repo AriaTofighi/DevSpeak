@@ -38,6 +38,7 @@ class Layout extends React.Component {
   componentDidMount() {
     // this.setState({ loginLoading: false });
     this.listenAuth = auth.onAuthStateChanged((user) => {
+      console.log(user);
       this.setState(
         {
           user,
@@ -45,55 +46,59 @@ class Layout extends React.Component {
         },
         () => {
           if (user) {
+            console.log("user authenticated");
             if (this.state.user && this.props.location.pathname === "/login") {
               this.redirectToChat();
             }
             // Get chatsWith array from db
             db.collection("users")
-              .doc(this.state.user.uid)
+              .doc(user.uid)
               .onSnapshot((doc) => {
                 this.setState({ chatsWith: doc.data().chatsWith }, () => {
                   // console.log("chatting with: ", this.state.chatsWith)
                 });
               });
+
+            // Get all user data
+            db.collection("users").onSnapshot((snap) => {
+              this.setState(
+                {
+                  users: snap.docs.map((doc) => ({
+                    id: doc.id,
+                    name: doc.data().name,
+                  })),
+                },
+                () => {
+                  let usersWithRoomInfo = this.state.users.map((user) => {
+                    db.collection("rooms")
+                      .where("users", "array-contains", this.state.user.uid)
+                      .onSnapshot((snap) => {
+                        console.log("inside of user list where fucntion");
+                        snap.forEach((doc) => {
+                          if (doc.data().users.includes(user.id)) {
+                            // Should only find one document since only one room between 2 people is made
+                            user.latestMessage = doc.data().latestMessage;
+                            user.latestTime = doc.data().latestTime;
+                            if (user.latestMessage.length > 20) {
+                              user.latestMessage = user.latestMessage.substring(
+                                0,
+                                20
+                              );
+                            }
+                            user.latestMessage = user.latestMessage + "...";
+                          }
+                          this.setState({ users: [...usersWithRoomInfo] });
+                        });
+                      });
+                    return user;
+                  });
+                }
+              );
+            });
           } else {
             // console.log("user not logged in");
             this.props.history.push("/login");
           }
-        }
-      );
-    });
-
-    // Get all user data
-    db.collection("users").onSnapshot((snap) => {
-      this.setState(
-        {
-          users: snap.docs.map((doc) => ({
-            id: doc.id,
-            name: doc.data().name,
-          })),
-        },
-        () => {
-          let usersWithRoomInfo = this.state.users.map((user) => {
-            db.collection("rooms")
-              .where("users", "array-contains", auth.currentUser.uid)
-              .onSnapshot((snap) => {
-                console.log("inside of user list where fucntion");
-                snap.forEach((doc) => {
-                  if (doc.data().users.includes(user.id)) {
-                    // Should only find one document since only one room between 2 people is made
-                    user.latestMessage = doc.data().latestMessage;
-                    user.latestTime = doc.data().latestTime;
-                    if (user.latestMessage.length > 20) {
-                      user.latestMessage = user.latestMessage.substring(0, 20);
-                    }
-                    user.latestMessage = user.latestMessage + "...";
-                  }
-                });
-              });
-            return user;
-          });
-          this.setState({ users: [...usersWithRoomInfo] });
         }
       );
     });
@@ -112,8 +117,7 @@ class Layout extends React.Component {
   };
 
   sendMessage = () => {
-    const date = new Date();
-    let currentDateAndTime = date.toString();
+    let currentDateAndTime = firebase.firestore.Timestamp.now();
 
     if (this.state.messages.length === 0) {
       db.collection("rooms")
@@ -153,6 +157,8 @@ class Layout extends React.Component {
             latestMessage: this.state.currentMessage,
             latestTime: currentDateAndTime,
           });
+          this.getRoomClickedData(this.state.chattingWith.id);
+
           this.setState({ currentMessage: "" });
         });
     }
@@ -175,7 +181,7 @@ class Layout extends React.Component {
   };
 
   googleLogin = () => {
-    // this.setState({ loginLoading: true });
+    this.setState({ loginLoading: true });
     auth
       .signInWithPopup(provider)
       .then((result) => {

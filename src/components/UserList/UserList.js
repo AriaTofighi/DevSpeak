@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { auth, db } from "../../services/firebase";
 import Divider from "@material-ui/core/Divider";
+import moment from "moment";
 
 import classes from "./UserList.module.css";
 
@@ -29,6 +30,7 @@ const getInitials = (fullName) => {
 };
 
 const UserList = (props) => {
+  console.log(props.roomDataList);
   function getModalStyle() {
     const top = 50;
     const left = 50;
@@ -83,15 +85,15 @@ const UserList = (props) => {
   let initials;
 
   // room data list is user data list with also last message / last message time room data if applicable
-  const sidebarUsers = props.roomDataList?.map((user) => {
+  const sidebarUsers = props.roomDataList?.flatMap((user) => {
     let userId = user.id;
 
     if (auth.currentUser.uid === userId || !props.chatsWith.includes(userId)) {
-      return;
+      return [];
     }
 
     initials = getInitials(user.name);
-    return (
+    return [
       // <React.Fragment key={user.name}>
       <div
         className={materialClasses.root}
@@ -105,10 +107,19 @@ const UserList = (props) => {
           <ListItemText primary={user.name} />
           {/* <ListItemText primary={user.latestMessage} /> */}
         </ListItem>
-        <div className={classes.LatestMessage}>{user.latestMessage}</div>
-      </div>
+        <div className={classes.LatestInfo}>
+          <p className={classes.LatestMessage}>{user.latestMessage} </p>
+          {user.latestTime ? (
+            <p className={classes.LatestTime}>
+              {moment(user.latestTime?.toDate().toISOString()).format(
+                "YYYY-MM-DD h:mm a"
+              )}
+            </p>
+          ) : null}
+        </div>
+      </div>,
       // </React.Fragment>
-    );
+    ];
   });
 
   const addToChattingWith = (userId) => {
@@ -133,16 +144,16 @@ const UserList = (props) => {
       );
   };
 
-  const allUsers = props.roomDataList?.map((user) => {
+  const allUsers = props.roomDataList?.flatMap((user) => {
     let userId = user.id;
-    // console.log(userId, auth.currentUser.uid);
+    console.log("chatsWith array", props.chatsWith);
 
     if (auth.currentUser.uid === userId || props.chatsWith.includes(userId)) {
-      return;
+      return [];
     }
     // console.log("ID List:", userId);
     initials = getInitials(user.name);
-    return (
+    return [
       <ListItem
         button
         key={user.name}
@@ -152,8 +163,8 @@ const UserList = (props) => {
           <Avatar style={AvatarStyles}>{initials}</Avatar>
         </ListItemIcon>
         <ListItemText primary={user.name} />
-      </ListItem>
-    );
+      </ListItem>,
+    ];
   });
 
   const body = (

@@ -46,20 +46,9 @@ const Login = (props) => {
       <Paper className={materialClasses.paper} elevation={3}>
         Login to DevSpeak
         <Divider style={DividerStyles} />
-        {/* <input className={classes.Input} placeholder="Email"></input>
-        <input
-          className={classes.Input}
-          type="password"
-          placeholder="Password"
-        ></input>
-        <button className={classes.Button}>Login</button> */}
         <button className={classes.Button} onClick={props.googleLogin}>
           Google Login
         </button>
-        {/* <div className={classes.NoAccount}>
-          Don't have an account? Sign up{" "}
-          <p className={classes.NoAccountLink}>here.</p>
-        </div> */}
       </Paper>
     </div>
   );

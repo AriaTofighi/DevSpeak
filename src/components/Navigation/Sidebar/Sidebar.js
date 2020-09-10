@@ -20,6 +20,14 @@ const Sidebar = (props) => {
           props.show ? classes.Open : classes.Close
         }`}
       >
+        <div className={classes.UserInfo}>
+          <img
+            className={classes.UserPhoto}
+            src={props.user.photoURL}
+            alt="userPhoto"
+          />
+          <p className={classes.UserName}>{props.user.displayName}</p>
+        </div>
         <Divider style={DividerStyles} />
         <UserList
           chatsWith={props.chatsWith}
