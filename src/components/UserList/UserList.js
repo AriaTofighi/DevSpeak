@@ -13,6 +13,7 @@ import {
 import { auth, db } from "../../services/firebase";
 import Divider from "@material-ui/core/Divider";
 import moment from "moment";
+import { pure } from "recompose";
 
 import classes from "./UserList.module.css";
 
@@ -54,9 +55,10 @@ const UserList = (props) => {
       padding: theme.spacing(2, 4, 3),
     },
     root: {
+      transition: "background-color 0.35s",
       padding: "15px",
       "&:hover": {
-        backgroundColor: "#986e89",
+        backgroundColor: "#986e8980",
       },
       cursor: "pointer",
     },
@@ -94,7 +96,6 @@ const UserList = (props) => {
 
     initials = getInitials(user.name);
     return [
-      // <React.Fragment key={user.name}>
       <div
         className={materialClasses.root}
         key={user.name}
@@ -105,7 +106,6 @@ const UserList = (props) => {
             <Avatar style={AvatarStyles}>{initials}</Avatar>
           </ListItemIcon>
           <ListItemText primary={user.name} />
-          {/* <ListItemText primary={user.latestMessage} /> */}
         </ListItem>
         <div className={classes.LatestInfo}>
           <p className={classes.LatestMessage}>{user.latestMessage} </p>
@@ -118,12 +118,10 @@ const UserList = (props) => {
           ) : null}
         </div>
       </div>,
-      // </React.Fragment>
     ];
   });
 
   const addToChattingWith = (userId) => {
-    // console.log(userId);
     db.collection("users")
       .doc(auth.currentUser.uid)
       .set(
@@ -143,10 +141,12 @@ const UserList = (props) => {
         { merge: true }
       );
   };
-
+  let counter = 0;
   const allUsers = props.roomDataList?.flatMap((user) => {
+    counter++;
     let userId = user.id;
     console.log("chatsWith array", props.chatsWith);
+    console.log("counter", counter);
 
     if (auth.currentUser.uid === userId || props.chatsWith.includes(userId)) {
       return [];
@@ -167,7 +167,7 @@ const UserList = (props) => {
     ];
   });
 
-  const body = (
+  const modalBody = (
     <div style={modalStyle} className={materialClasses.paper}>
       <h2 id="simple-modal-title">Select a User</h2>
       <div id="simple-modal-description">{allUsers}</div>
@@ -186,7 +186,7 @@ const UserList = (props) => {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
           >
-            {body}
+            {modalBody}
           </Modal>
         </ListItem>{" "}
       </List>
@@ -197,4 +197,4 @@ const UserList = (props) => {
   );
 };
 
-export default UserList;
+export default pure(UserList);

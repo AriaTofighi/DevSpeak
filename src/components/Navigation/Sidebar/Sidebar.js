@@ -5,15 +5,15 @@ import UserList from "../../UserList/UserList";
 import Backdrop from "../../UI/Backdrop/Backdrop";
 import classes from "./Sidebar.module.css";
 
-const Sidebar = (props) => {
-  let DividerStyles = {
-    backgroundColor: "#CFBEC9",
-    width: "90%",
-    margin: "auto",
-  };
+let DividerStyles = {
+  backgroundColor: "#CFBEC9",
+  width: "90%",
+  margin: "auto",
+};
 
+const Sidebar = (props) => {
   return (
-    <React.Fragment>
+    <>
       <Backdrop show={props.show} clicked={props.hideBackdrop} />
       <div
         className={`${classes.Sidebar} ${
@@ -37,7 +37,7 @@ const Sidebar = (props) => {
           currentRoomRef={props.currentRoomRef}
         />
       </div>
-    </React.Fragment>
+    </>
   );
 };
 

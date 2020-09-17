@@ -1,5 +1,4 @@
 import React from "react";
-// import Typography  from "@material-ui/core/Typography";
 
 import classes from "./Layout.module.css";
 import Chat from "../../pages/Chat/Chat";
@@ -36,9 +35,7 @@ class Layout extends React.Component {
   };
 
   componentDidMount() {
-    // this.setState({ loginLoading: false });
     this.listenAuth = auth.onAuthStateChanged((user) => {
-      console.log(user);
       this.setState(
         {
           user,
@@ -54,9 +51,7 @@ class Layout extends React.Component {
             db.collection("users")
               .doc(user.uid)
               .onSnapshot((doc) => {
-                this.setState({ chatsWith: doc.data().chatsWith }, () => {
-                  // console.log("chatting with: ", this.state.chatsWith)
-                });
+                this.setState({ chatsWith: doc.data().chatsWith });
               });
 
             // Get all user data
@@ -75,6 +70,7 @@ class Layout extends React.Component {
                       .onSnapshot((snap) => {
                         console.log("inside of user list where fucntion");
                         snap.forEach((doc) => {
+                          console.log("FOREACH LOOP RUNS");
                           if (doc.data().users.includes(user.id)) {
                             // Should only find one document since only one room between 2 people is made
                             user.latestMessage = doc.data().latestMessage;
@@ -96,7 +92,7 @@ class Layout extends React.Component {
               );
             });
           } else {
-            // console.log("user not logged in");
+            // User is not logged in
             this.props.history.push("/login");
           }
         }
@@ -105,9 +101,7 @@ class Layout extends React.Component {
   }
 
   currentMessageChangedHandler = (e) => {
-    this.setState({ currentMessage: e.target.value }, () => {
-      // console.log("current message: " + this.state.currentMessage)
-    });
+    this.setState({ currentMessage: e.target.value });
   };
 
   handleMessageKeyDown = (event) => {
@@ -158,7 +152,6 @@ class Layout extends React.Component {
             latestTime: currentDateAndTime,
           });
           this.getRoomClickedData(this.state.chattingWith.id);
-
           this.setState({ currentMessage: "" });
         });
     }
@@ -188,25 +181,20 @@ class Layout extends React.Component {
         let user = result.user;
         let uniqueUser = result.additionalUserInfo.isNewUser;
         let dbRef = db.collection("users").doc(user.uid);
-        // console.log("logged in successfully");
         this.setState({ user });
         if (uniqueUser) {
+          // Add new user data to db
           dbRef
             .set({
               name: user.displayName,
               email: user.email,
               chatsWith: [],
             })
-            .then(() => {
-              // console.log("Added new user to database.");
-              this.redirectToChat();
-            })
             .catch((error) => {
               console.log(error);
             });
-        } else {
-          this.redirectToChat();
         }
+        this.redirectToChat();
       })
       .catch((error) => {
         this.setState({ loginLoading: false });
@@ -220,11 +208,8 @@ class Layout extends React.Component {
         firebase
           .auth()
           .signOut()
-          .then(function () {
-            // Sign-out successful.
-          })
-          .catch(function (error) {
-            // An error happened.
+          .catch((e) => {
+            console.log(e);
           });
       }
     );
@@ -265,7 +250,7 @@ class Layout extends React.Component {
           console.log("room exists");
 
           querySnapshot.forEach((doc) => {
-            // Only one document should match the correct combo id so this will loop once
+            // Only one document should match the correct combo id so this will execute once
             this.setState({ currentRoomRef: doc.ref }, () =>
               console.log("current room ref", this.state.currentRoomRef)
             );
@@ -311,6 +296,7 @@ class Layout extends React.Component {
   };
 
   render() {
+    console.count("counter");
     // console.log(this.props.user);
     let checkingAuthLoader = null;
     if (this.state.checkingAuth) {
@@ -351,7 +337,7 @@ class Layout extends React.Component {
                 showSidebar={this.state.showSidebar}
                 hideBackdrop={this.sidebarToggleHandler}
                 messages={this.state.messages}
-                roomDataList={this.state.users} // the list of all users, not room data
+                roomDataList={this.state.users} // the list of all users with room data (if applicable)
                 user={this.state.user}
                 userClicked={(userId) => this.userClickedHandler(userId)}
                 chattingWith={this.state.chattingWith}

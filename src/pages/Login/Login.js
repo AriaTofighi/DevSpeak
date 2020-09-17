@@ -25,23 +25,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const DividerStyles = {
+  margin: "15px 0 10px 0",
+};
+
 const Login = (props) => {
   let history = useHistory();
   if (props.user) {
     history.push("/chat");
   }
-  let DividerStyles = {
-    margin: "15px 0 10px 0",
-  };
-  let materialClasses = useStyles();
+
+  const materialClasses = useStyles();
 
   return (
     <div className={classes.Login}>
       {props.loading ? (
-        <React.Fragment>
+        <>
           <Backdrop show={true} />
           <Spinner />
-        </React.Fragment>
+        </>
       ) : null}
       <Paper className={materialClasses.paper} elevation={3}>
         Login to DevSpeak

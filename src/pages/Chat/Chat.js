@@ -7,7 +7,6 @@ import { useHistory } from "react-router-dom";
 const Chat = (props) => {
   let history = useHistory();
   let chat = null;
-  // console.log(props.user);
   if (props.user) {
     chat = (
       <>
