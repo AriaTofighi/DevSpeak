@@ -68,11 +68,9 @@ class Layout extends React.Component {
                     db.collection("rooms")
                       .where("users", "array-contains", this.state.user.uid)
                       .onSnapshot((snap) => {
-                        console.log("inside of user list where fucntion");
                         snap.forEach((doc) => {
-                          console.log("FOREACH LOOP RUNS");
+                          console.log("Doc data:", doc.data());
                           if (doc.data().users.includes(user.id)) {
-                            // Should only find one document since only one room between 2 people is made
                             user.latestMessage = doc.data().latestMessage;
                             user.latestTime = doc.data().latestTime;
                             if (user.latestMessage.length > 20) {
@@ -83,8 +81,8 @@ class Layout extends React.Component {
                             }
                             user.latestMessage = user.latestMessage + "...";
                           }
-                          this.setState({ users: [...usersWithRoomInfo] });
                         });
+                        this.setState({ users: [...usersWithRoomInfo] });
                       });
                     return user;
                   });
